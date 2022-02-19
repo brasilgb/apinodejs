@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('../db').pool;
 const multer = require('multer');
+const login = require('../middleware/login');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -60,7 +61,7 @@ router.get('/', (req, res, next) => {
 });
 
 // Insere um produto
-router.post('/', upload.single('produto_imagem'), (req, res, next) => {
+router.post('/', upload.single('produto_imagem'), login, (req, res, next) => {
     console.log(req.file);
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) };
