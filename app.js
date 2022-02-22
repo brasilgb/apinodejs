@@ -3,9 +3,10 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const rotaProdutos = require('./routes/produtos');
-const rotaPedidos = require('./routes/pedidos');
-const rotaUsuarios = require('./routes/usuarios');
+const routeProducts = require('./routes/products');
+const routeOrders = require('./routes/orders');
+const routeUsers = require('./routes/users');
+const routeImages = require('./routes/images');
 
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
@@ -26,12 +27,13 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/produtos', rotaProdutos);
-app.use('/pedidos', rotaPedidos);
-app.use('/usuarios', rotaUsuarios);
+app.use('/products', routeProducts);
+app.use('/orders', routeOrders);
+app.use('/users', routeUsers);
+app.use('/images', routeImages);
 
 app.use((req, res, next) => {
-    const erro = new Error('Não encontrado');
+    const erro = new Error('Not Found!');
     erro.status = 404;
     next(erro);
 });

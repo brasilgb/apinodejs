@@ -3,7 +3,8 @@ const router = express.Router();
 const mysql = require('../db').pool;
 const multer = require('multer');
 const login = require('../middleware/login');
-const ProdutosController = require('../controllers/produtos-controller');
+
+const ProductsController = require('../controllers/products-controller');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -30,25 +31,25 @@ const upload = multer({
     },
     fileFilter: fileFilter
 });
-router.get('/', ProdutosController.getProdutos);
+router.get('/', ProductsController.getProducts);
 router.post(
     '/',
-    login.obrigatorio,
-    upload.single('produto_imagem'),
-    ProdutosController.postProduto
+    login.required,
+    upload.single('productImage'),
+    ProductsController.postProduct
 );
-router.get('/:id_produto', ProdutosController.getOneProduto);
-router.patch('/', login.obrigatorio, ProdutosController.updateProduto);
-router.delete('/', login.obrigatorio, ProdutosController.deleteProduto);
+router.get('/:productId', ProductsController.getOneProduct);
+router.patch('/', login.required, ProductsController.updateProduct);
+router.delete('/', login.required, ProductsController.deleteProduct);
 router.post(
-    '/:id_produto/imagem',
-    login.obrigatorio,
-    upload.single('produto_imagem'),
-    ProdutosController.postImagem
+    '/:productId/image',
+    login.required,
+    upload.single('productImage'),
+    ProductsController.postImage
 );
 router.get(
-    '/:id_produto/imagens',
-    ProdutosController.getImagens
+    '/:productId/images',
+    ProductsController.getImages
 );
 
 module.exports = router;
