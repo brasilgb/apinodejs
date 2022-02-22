@@ -1,19 +1,19 @@
 const mysql = require('../db');
 
-exports.deleteImagem = async (req, res, next) => {
+exports.deleteImage = async (req, res, next) => {
     try {
-        const result = await mysql.execute("DELETE FROM imagens_produtos WHERE id_imagem  = ?", 
-        [req.params.id_imagem]
+        const result = await mysql.execute("DELETE FROM productimages WHERE imageId  = ?", 
+        [req.params.imageId]
         );
         const response = {
-            mensagem: 'Imagem removida com sucesso!',
+            mensagem: 'Image successfully removed!',
             request: {
                 tipo: 'POST',
-                descricao: 'Imagens do produto!',
-                url: process.env.URL_API + 'produtos/' + req.body.id_produto + '/imagens',
+                descricao: 'Product image!',
+                url: process.env.URL_API + 'products/' + req.body.id_produto + '/images',
                 body: {
-                    id_produto: 'Number',
-                    imagem_produto: 'File'
+                    productId: 'Number',
+                    path: 'File'
                 }
             }
         }

@@ -1,30 +1,30 @@
 
 const mysql = require('../db');
 
-exports.getPedidos = async (req, res, next) => {
+exports.getOrders = async (req, res, next) => {
     try {
-        const result = await mysql.execute(`SELECT pedidos.id_pedido,
-                    pedidos.quantidade,
-                    produtos.id_produto,
-                    produtos.nome,
-                    produtos.preco
-            FROM pedidos
-        INNER JOIN produtos
-                ON produtos.id_produto = pedidos.id_produto;`);
+        const result = await mysql.execute(`SELECT orders.orderId,
+                    orders.quantity,
+                    products.productId,
+                    products.name,
+                    products.price
+            FROM orders
+        INNER JOIN products
+                ON products.productId = orders.productId;`);
         const response = {
-            pedidos: result.map(pedido => {
+            orders: result.map(order => {
                 return {
-                    id_pedido: pedido.id_pedido,
-                    quantidade: pedido.quantidade,
-                    produto: {
-                        id_produto: pedido.id_produto,
-                        nome: pedido.nome,
-                        preco: pedido.preco,
+                    orderId: order.orderId,
+                    quantity: order.quantity,
+                    product: {
+                        productId: order.productId,
+                        name: order.name,
+                        price: order.price,
                     },
                     request: {
-                        tipo: 'GET',
-                        descricao: 'Retorna os dados de um pedido!',
-                        url: process.env.URL_API + 'pedidos/' + pedido.id_pedido
+                        type: 'GET',
+                        description: 'Returns order data!',
+                        url: process.env.URL_API + 'orders/' + order.orderId
                     }
                 }
             })
@@ -35,25 +35,25 @@ exports.getPedidos = async (req, res, next) => {
     }
 };
 
-exports.postPedidos = async (req, res, next) => {
+exports.postOrders = async (req, res, next) => {
     try {
-        const resultUPdate = await mysql.execute("SELECT * FROM produtos WHERE id_produto = ?",
-            [req.body.id_produto]);
+        const resultUPdate = await mysql.execute("SELECT * FROM products WHERE productId = ?",
+            [req.body.productId]);
         if (resultUPdate.length == 0) {
-            return res.status(404).send({ message: 'Produto não encontrado' });
+            return res.status(404).send({ message: 'Product not found!' });
         }
-        const result = await mysql.execute("INSERT INTO pedidos (id_produto, quantidade) VALUES (?,?);",
-            [req.body.id_produto, req.body.quantidade]);
+        const result = await mysql.execute("INSERT INTO orders (productId, quantity) VALUES (?,?);",
+            [req.body.productId, req.body.quantity]);
         const response = {
-            mensagem: 'Pedido inserido com sucesso!',
-            pedidoCriado: {
-                id_pedido: result.id_pedido,
-                id_produto: req.body.id_produto,
-                quantidade: req.body.quantidade,
+            message: 'Order entered successfully!',
+            orderCreated: {
+                orderId: result.orderId,
+                productId: req.body.productId,
+                quantity: req.body.quantity,
                 request: {
-                    tipo: 'GET',
-                    descricao: 'Retorna todos os pedidos!',
-                    url: process.env.URL_API + 'pedidos'
+                    type: 'GET',
+                    description: 'Return orders data!',
+                    url: process.env.URL_API + 'orders'
                 }
             }
         }
@@ -63,25 +63,26 @@ exports.postPedidos = async (req, res, next) => {
     }
 };
 
-exports.getOnePedido = async (req, res, next) => {
+exports.getOneOrder = async (req, res, next) => {
 
     try {
-        const result = await mysql.execute("SELECT * FROM pedidos WHERE id_pedido = ? ;",
-            [req.params.id_pedido]);
+        const query = 'SELECT * FROM orders WHERE orderId = ?;';
+        const result = await mysql.execute( query,
+            [req.params.orderId]);
         if (result.length == 0) {
             return res.status(404).send({
-                mensagem: 'Não foi encontrado pedidos com este ID"'
+                message: 'No order found with this ID!'
             })
         }
         const response = {
-            pedido: {
-                id_pedido: result[0].id_pedido,
-                id_produto: result[0].id_produto,
-                quantidade: result[0].quantidade,
+            order: {
+                orderId: result[0].orderId,
+                productId: result[0].productId,
+                quantity: result[0].quantity,
                 request: {
-                    tipo: 'GET',
-                    descricao: 'Retorna todos os pedidos!',
-                    url: process.env.URL_API + 'produtos'
+                    type: 'GET',
+                    description: 'Return orders data!',
+                    url: process.env.URL_API + 'products'
                 }
             }
         }
@@ -91,19 +92,20 @@ exports.getOnePedido = async (req, res, next) => {
     }
 };
 
-exports.deletePedido = async (req, res, next) => {
+exports.deleteOrder = async (req, res, next) => {
     try {
-        const result = await mysql.execute("DELETE FROM pedidos WHERE id_pedido  = ?",
-            [req.body.id_pedido]);
+        const query = 'DELETE FROM orders WHERE orderId  = ?';
+        const result = await mysql.execute( query,
+            [req.body.orderId]);
         const response = {
-            mensagem: 'Pedido removido com sucesso!',
+            message: 'Order removed successfully!',
             request: {
-                tipo: 'POST',
-                descricao: 'Insere um pedido!',
-                url: process.env.URL_API + 'pedidos',
+                type: 'POST',
+                description: 'Insert an order!',
+                url: process.env.URL_API + 'orders',
                 body: {
-                    nome: 'String',
-                    quantidade: 'Number'
+                    name: 'String',
+                    quantity: 'Number'
                 }
             }
         }

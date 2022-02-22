@@ -13,7 +13,7 @@ exports.required = (req, res, next) => {
 
 }
 
-exports.opcional = (req, res, next) => {
+exports.optional = (req, res, next) => {
 
     try {
         const token = req.headers.authorization.split(' ')[1];

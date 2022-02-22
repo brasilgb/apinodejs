@@ -35,7 +35,7 @@ router.get('/', ProductsController.getProducts);
 router.post(
     '/',
     login.required,
-    upload.single('productImage'),
+    upload.single('image'),
     ProductsController.postProduct
 );
 router.get('/:productId', ProductsController.getOneProduct);
@@ -44,7 +44,7 @@ router.delete('/', login.required, ProductsController.deleteProduct);
 router.post(
     '/:productId/image',
     login.required,
-    upload.single('productImage'),
+    upload.single('image'),
     ProductsController.postImage
 );
 router.get(

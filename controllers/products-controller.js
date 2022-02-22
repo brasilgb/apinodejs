@@ -31,11 +31,12 @@ exports.postProduct = async (req, res, next) => {
     try {
         const originalPath = req.file.path;
         const imgPath = originalPath.replace('\\', '/');
-        const query = 'INSERT INTO products (name, price, productImage) VALUES (?,?,?)';
+        const query = 'INSERT INTO products (name, price, productImage, categoryId) VALUES (?,?,?,?)';
         const result = await mysql.execute(query, [
             req.body.name, 
             req.body.price, 
-            imgPath
+            imgPath,
+            req.body.categoryId
         ]);
         const response = {
             mensagem: 'Product inserted successfully!',
@@ -44,6 +45,7 @@ exports.postProduct = async (req, res, next) => {
                 name: req.body.name,
                 price: req.body.price,
                 productImage: imgPath,
+                categoryId: req.body.categoryId,
                 request: {
                     type: 'GET',
                     description: 'Returns all products!',
@@ -143,7 +145,7 @@ exports.postImage = async (req, res, next) => {
             imageCriada: {
                 productId: req.params.productId,
                 imageId: result.insertId,
-                image_product: process.env.URL_API + imgPath,
+                path: process.env.URL_API + imgPath,
                 request: {
                     type: 'GET',
                     description: 'Returns all images!',
