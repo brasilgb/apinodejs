@@ -1,5 +1,3 @@
-const { connect } = require('../routes/products');
-
 const mysql = require('../db');
 
 exports.getProducts = async (req, res, next) => {
